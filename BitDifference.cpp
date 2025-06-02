@@ -1,6 +1,6 @@
 /*   Bit Difference
 You are given two numbers a and b. The task is to count the number of bits needed to be flipped to convert a to b.
-
+ 
 Examples:
 Input: a = 10, b = 20
 Output: 4
