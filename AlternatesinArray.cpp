@@ -1,4 +1,4 @@
-/* Alternates in an Array
+/* Alternates in an Array  
 
 You are given an array arr[], the task is to return a list elements of arr in alternate order (starting from index 0).
 
