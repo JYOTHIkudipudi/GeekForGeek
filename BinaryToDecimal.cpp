@@ -7,7 +7,7 @@ Input: n = 10001000
 Output: 136
 Input: n = 101100
 Output: 44   */
-    
+       
 #include<bits/stdc++.h>
 using namespace std;
 int main(){
