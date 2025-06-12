@@ -3,7 +3,7 @@
 Insertion is a basic but frequently used operation. Arrays in most languages cannnot be dynamically shrinked or expanded. 
 Here, we will work with such arrays and try to insert an element at some index.
 You are given an array arr(0-based index). The size of the array is given by sizeOfArray. You need to insert an element at given index.
-
+ 
 Example 1:
 Input:
 sizeOfArray = 6
