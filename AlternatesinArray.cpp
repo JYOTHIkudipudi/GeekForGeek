@@ -9,7 +9,7 @@ Explanation:
 Take first element: 1
 Skip second element: 2
 Take third element: 3
-Skip fourth element: 4
+Skip fourth element: 4 
 
 Input: arr[] = [1, 2, 3, 4, 5]  
 Output: 1 3 5
