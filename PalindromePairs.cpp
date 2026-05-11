@@ -25,60 +25,45 @@ Constraints:
 
 class Solution {
   public:
-  
-    bool isPalindrome(string &s, int l, int r) {
-        while (l < r) {
-            if (s[l] != s[r]) return false;
-            l++;
-            r--;
-        }
-        return true;
-    }
-    
     bool palindromePair(vector<string>& arr) {
+        unordered_set<string> wordSet(arr.begin(), arr.end());
         
-        unordered_set<string> st;
-        
-        // Store all strings
-        for (auto &s : arr) {
-            st.insert(s);
-        }
-        
-        for (auto &s : arr) {
+        for (string& word : arr) {
+            int len = word.length();
             
-            int n = s.size();
-            
-            for (int i = 0; i <= n; i++) {
+            for (int k = 0; k <= len; k++) {
+                string prefix = word.substr(0, k);
+                string suffix = word.substr(k);
                 
-                string left = s.substr(0, i);
-                string right = s.substr(i);
-                
-                // Case 1:
-                // left is palindrome
-                if (isPalindrome(left, 0, left.size() - 1)) {
-                    
-                    string revRight = right;
-                    reverse(revRight.begin(), revRight.end());
-                    
-                    if (st.count(revRight) && revRight != s) {
+                // If prefix is palindrome, check if reverse(suffix) exists
+                if (isPalindrome(prefix)) {
+                    string revSuffix = suffix;
+                    reverse(revSuffix.begin(), revSuffix.end());
+                    if (wordSet.count(revSuffix) && revSuffix != word) {
                         return true;
                     }
                 }
                 
-                // Case 2:
-                // right is palindrome
-                if (i != n && isPalindrome(right, 0, right.size() - 1)) {
-                    
-                    string revLeft = left;
-                    reverse(revLeft.begin(), revLeft.end());
-                    
-                    if (st.count(revLeft) && revLeft != s) {
+                // If suffix is palindrome, check if reverse(prefix) exists
+                if (isPalindrome(suffix)) {
+                    string revPrefix = prefix;
+                    reverse(revPrefix.begin(), revPrefix.end());
+                    if (wordSet.count(revPrefix) && revPrefix != word) {
                         return true;
                     }
                 }
             }
         }
-        
         return false;
     }
+    
+  private:
+    bool isPalindrome(const string& s) {
+        int l = 0, r = s.length() - 1;
+        while (l < r) {
+            if (s[l++] != s[r--]) return false;
+        }
+        return true;
+    }
+};
 };
