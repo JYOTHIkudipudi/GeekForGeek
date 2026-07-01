@@ -15,22 +15,27 @@ Explanation: We can get maximum sum subarray by skipping -2 as [4,-1,1,5] sums t
 Constraints:
 1 ≤ arr.size() ≤ 106
 -103 ≤ arr[i] ≤ 103  */
+
+
+
 class Solution {
   public:
-    int maxSum(vector<int> &arr) {
+    int maxSumSubarray(vector<int>& arr) {
         int n = arr.size();
 
-        int keep = arr[0];
-        int drop = INT_MIN;
+        int keep = arr[0];      // Max sum ending here without deletion
+        int drop = INT_MIN;     // Max sum ending here with one deletion
         int ans = arr[0];
 
         for (int i = 1; i < n; i++) {
             int prevKeep = keep;
 
+            // No deletion
             keep = max(arr[i], keep + arr[i]);
 
+            // One deletion
             if (drop == INT_MIN)
-                drop = prevKeep;          // delete current element
+                drop = prevKeep;                // Delete current element
             else
                 drop = max(drop + arr[i], prevKeep);
 
@@ -40,3 +45,4 @@ class Solution {
         return ans;
     }
 };
+
