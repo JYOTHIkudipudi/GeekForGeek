@@ -16,43 +16,35 @@ Constraints:
 0 ≤ d ≤ 9  */
 
 class Solution {
-public:
-    string digits;
-    int d;
-    int len;
-    long long dp[12][2];
-    bool visited[12][2];
-
-    long long go(int pos, bool started, bool tight) {
-        if (pos == len) return 1;
-        if (!tight && visited[pos][started]) return dp[pos][started];
-
-        int limit = tight ? (digits[pos] - '0') : 9;
-        long long res = 0;
-
-        for (int dig = 0; dig <= limit; dig++) {
-            bool isRealDigit = started || (dig != 0);
-            if (dig == d && isRealDigit) continue; // not allowed
-
-            bool newStarted = started || (dig != 0);
-            bool newTight = tight && (dig == limit);
-            res += go(pos + 1, newStarted, newTight);
-        }
-
-        if (!tight) {
-            visited[pos][started] = true;
-            dp[pos][started] = res;
-        }
-        return res;
-    }
-
-    int countWithout(int n, int dIn) {
-        d = dIn;
-        digits = to_string(n);
-        len = digits.size();
-        memset(visited, 0, sizeof(visited));
-
-        long long f = go(0, false, true);
-        return (int)(f - 1); // exclude the always-counted "0"
+  public:
+    int countWithout(int n, int d) {
+        string digits = to_string(n);
+        int len = digits.size();
+        
+        // dp[pos][started] - memo only valid for tight=false
+        vector<vector<long long>> dp(len + 1, vector<long long>(2, -1));
+        
+        function<long long(int, bool, bool)> go = [&](int pos, bool started, bool tight) -> long long {
+            if (pos == len) return 1;
+            if (!tight && dp[pos][started] != -1) return dp[pos][started];
+            
+            int limit = tight ? (digits[pos] - '0') : 9;
+            long long res = 0;
+            
+            for (int dig = 0; dig <= limit; dig++) {
+                bool isRealDigit = started || (dig != 0);
+                if (dig == d && isRealDigit) continue; // skip forbidden digit
+                
+                bool newStarted = started || (dig != 0);
+                bool newTight = tight && (dig == limit);
+                res += go(pos + 1, newStarted, newTight);
+            }
+            
+            if (!tight) dp[pos][started] = res;
+            return res;
+        };
+        
+        long long total = go(0, false, true); // counts 0..n, including "0" itself
+        return (int)(total - 1); // exclude 0, since we want count in [1, n]
     }
 };
