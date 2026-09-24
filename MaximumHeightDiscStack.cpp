@@ -25,26 +25,78 @@ public:
         int n = r.size();
 
         vector<pair<int, int>> discs;
+        vector<int> heights;
+
         for (int i = 0; i < n; i++) {
             discs.push_back({r[i], h[i]});
+            heights.push_back(h[i]);
         }
 
+        // Coordinate compression of heights
+        sort(heights.begin(), heights.end());
+        heights.erase(unique(heights.begin(), heights.end()), heights.end());
+
+        // Sort by radius
         sort(discs.begin(), discs.end());
 
-        vector<int> dp(n);
+        int m = heights.size();
+        vector<int> bit(m + 1, 0);
+
+        auto query = [&](int idx) {
+            int res = 0;
+            while (idx > 0) {
+                res = max(res, bit[idx]);
+                idx -= idx & -idx;
+            }
+            return res;
+        };
+
+        auto update = [&](int idx, int val) {
+            while (idx <= m) {
+                bit[idx] = max(bit[idx], val);
+                idx += idx & -idx;
+            }
+        };
+
         int ans = 0;
 
-        for (int i = 0; i < n; i++) {
-            dp[i] = discs[i].second;
+        /*
+            Process equal-radius discs together.
+            This is important because radius must be STRICTLY smaller.
+        */
+        for (int i = 0; i < n; ) {
+            int j = i;
 
-            for (int j = 0; j < i; j++) {
-                if (discs[j].first < discs[i].first &&
-                    discs[j].second < discs[i].second) {
-                    dp[i] = max(dp[i], dp[j] + discs[i].second);
-                }
+            while (j < n && discs[j].first == discs[i].first)
+                j++;
+
+            vector<pair<int, int>> updates;
+
+            for (int k = i; k < j; k++) {
+                int height = discs[k].second;
+
+                int pos = lower_bound(
+                    heights.begin(),
+                    heights.end(),
+                    height
+                ) - heights.begin() + 1;
+
+                // Only heights strictly smaller than current height
+                int best = query(pos - 1);
+
+                int current = best + height;
+
+                ans = max(ans, current);
+
+                updates.push_back({pos, current});
             }
 
-            ans = max(ans, dp[i]);
+            // Update only after processing the whole radius group
+            for (auto [pos, value] : updates) {
+                update(pos, value);
+            }
+
+            i = j;
         }
 
         return ans;
