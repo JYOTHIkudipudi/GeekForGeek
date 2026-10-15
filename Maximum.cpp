@@ -17,11 +17,17 @@ Constraints:
 0 ≤ n ≤ 109
 */
 
+
 class Solution {
   public:
     int maxValue(int n) {
-        while ((n & (n >> 1) & (n >> 2)) != 0) {
-            n &= ~(1 << (31 - __builtin_clz(n)));
+        for (int i = 30; i >= 2; i--) {
+            if ((n & (1 << i)) &&
+                (n & (1 << (i - 1))) &&
+                (n & (1 << (i - 2)))) {
+                n &= ~(1 << (i - 2));
+                i = 31;  // Restart scanning from the highest bit
+            }
         }
         return n;
     }
