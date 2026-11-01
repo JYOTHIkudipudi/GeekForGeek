@@ -1,0 +1,38 @@
+/*  Maximum Subarray Sum with One Square Allowed
+
+Given an integer array arr[], find the maximum subarray sum by squaring at most one element.
+
+Examples:
+
+Input: arr[] =  [-1, -2, 3, -2, 3]
+Output: 10
+Explanation: The subarray {3, -2, 3} with squaring -2 will give the maximum sum as 3 + 4 + 3 = 10.
+Input: arr[] =  [-4, -4, -2, 5, 2, -1]
+Output: 27
+Explanation: The subarray {5, 2} with squaring 5 will give a maximum sum of 25 + 2 = 27.
+Constraints:
+
+1 ≤ arr.size() ≤ 105
+-103 ≤ arr[i] ≤ 103   */
+
+class Solution {
+  public:
+    int maximumSubarray(vector<int>& arr) {
+        long long dp0 = arr[0];
+        long long dp1 = 1LL * arr[0] * arr[0];
+        long long ans = max(dp0, dp1);
+
+        for (int i = 1; i < (int)arr.size(); i++) {
+            long long a = arr[i];
+            long long sq = a * a;
+
+            long long new0 = max(a, dp0 + a);
+            long long new1 = max({sq, dp0 + sq, dp1 + a});
+
+            dp0 = new0;
+            dp1 = new1;
+            ans = max({ans, dp0, dp1});
+        }
+        return (int)ans;
+    }
+};
